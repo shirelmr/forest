@@ -1,12 +1,15 @@
 import { useRef, useState } from 'react'
 // import './App.css'
 import '@aws-amplify/ui-react/styles.css';
-import { Button } from "@aws-amplify/ui-react";
+import { Button, SliderField } from "@aws-amplify/ui-react";
 
 function App() {
   let [location, setLocation] = useState("");
   let [trees, setTrees] = useState([]);
-  let gridSize = 5;
+  let [gridSize, setGridSize] = useState(20);
+  let [simSpeed, setSimSpeed] = useState(1);
+  let [density, setDensity] = useState(0.45);
+
   const running = useRef(null);
 
   let setup = () => {
@@ -14,6 +17,7 @@ function App() {
     fetch("http://localhost:8000/simulations", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dim: [gridSize, gridSize] })
     }).then(resp => resp.json())
     .then(data => {
       console.log(data);
@@ -42,19 +46,45 @@ function App() {
   if (burning == 0)
     handleStop();
 
-  let offset = (500 - gridSize * 12) / 2;
+  let offset = 50; //(500 - gridSize * 12) / 2;
+
+// const handleGridSizeSliderChange = (newValue) => {
+//   setGridSize(newValue);
+// };
+
   return (
     <>
       <div>
-        <Button variation={"contained"} onClick={setup}>
+        <Button variation={"primary"} onClick={setup}>
           Setup
         </Button>
-        <Button variation={"contained"} onClick={handleStart}>
+        <Button variation={"primary"} onClick={handleStart}>
           Start
         </Button>
-        <Button variation={"contained"} onClick={handleStop}>
+        <Button variation={"primary"} onClick={handleStop}>
           Stop
         </Button>
+        <SliderField
+          label="Grid size"
+          min={10} max={40} step={10}
+          type='number'
+          value={gridSize}
+          onChange={setGridSize}
+        />
+        <SliderField
+          label="Simulation speed"
+          min={1} max={5} step={1}
+          type='number'
+          value={simSpeed}
+          onChange={setSimSpeed}
+        />
+        <SliderField
+          label="Simulation density"
+          min={0} max={1} step={0.05}
+          type='number'
+          value={density}
+          onChange={setDensity}
+        />
       </div>
       <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor:"white"}}>
       {
