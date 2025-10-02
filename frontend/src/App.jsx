@@ -17,7 +17,7 @@ function App() {
     fetch("http://localhost:8000/simulations", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dim: [gridSize, gridSize] })
+      body: JSON.stringify({ dim: [gridSize, gridSize], density: density })
     }).then(resp => resp.json())
     .then(data => {
       console.log(data);
