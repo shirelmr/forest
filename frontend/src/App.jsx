@@ -1,9 +1,9 @@
-'use client'
-import { useRef, useState } from "react";
-import styles from "./page.module.css";
-import { Button } from "@mui/material";
+import { useRef, useState } from 'react'
+// import './App.css'
+import '@aws-amplify/ui-react/styles.css';
+import { Button } from "@aws-amplify/ui-react";
 
-export default function Home() {
+function App() {
   let [location, setLocation] = useState("");
   let [trees, setTrees] = useState([]);
   let gridSize = 5;
@@ -16,12 +16,14 @@ export default function Home() {
       headers: { 'Content-Type': 'application/json' },
     }).then(resp => resp.json())
     .then(data => {
+      console.log(data);
       setLocation(data["Location"]);
       setTrees(data["trees"]);
     });
-  }
+  };
 
   const handleStart = () => {
+    console.log("location", location);
     running.current = setInterval(() => {
       fetch("http://localhost:8000" + location)
       .then(res => res.json())
@@ -42,7 +44,7 @@ export default function Home() {
 
   let offset = (500 - gridSize * 12) / 2;
   return (
-    <main className={styles.main}>
+    <>
       <div>
         <Button variant={"contained"} onClick={setup}>
           Setup
@@ -70,6 +72,8 @@ export default function Home() {
         )
       }
       </svg>
-    </main>
+    </>
   );
 }
+
+export default App

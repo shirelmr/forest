@@ -19,11 +19,11 @@ end
 
 function forest_fire(; density = 0.45, griddims = (5, 5))
     space = GridSpaceSingle(griddims; periodic = false, metric = :manhattan)
-    forest = StandardABM(TreeAgent, space; agent_step! = forest_step, scheduler = Schedulers.Randomly())
+    forest = StandardABM(TreeAgent, space; agent_step! = forest_step, scheduler = Schedulers.ByID())
 
     for pos in positions(forest)
         if rand(Uniform(0,1)) < density
-            tree = add_agent!(I, forest)
+            tree = add_agent!(pos, TreeAgent, forest)
             if pos[1] == 1
                 tree.status = burning
             end
