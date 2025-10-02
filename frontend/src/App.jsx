@@ -46,13 +46,13 @@ function App() {
   return (
     <>
       <div>
-        <Button variant={"contained"} onClick={setup}>
+        <Button variation={"contained"} onClick={setup}>
           Setup
         </Button>
-        <Button variant={"contained"} onClick={handleStart}>
+        <Button variation={"contained"} onClick={handleStart}>
           Start
         </Button>
-        <Button variant={"contained"} onClick={handleStop}>
+        <Button variation={"contained"} onClick={handleStop}>
           Stop
         </Button>
       </div>
