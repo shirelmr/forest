@@ -10,16 +10,18 @@ function forest_step(tree::TreeAgent, model)
     if tree.status == burning
         for neighbor in nearby_agents(tree, model)
             if neighbor.status == green
-                neighbor.status = burning
+                if rand(0:100) <= model.probabilityOfSpread
+                    neighbor.status = burning
+                end
             end
         end
         tree.status = burnt
     end
 end
 
-function forest_fire(; density = 0.45, griddims = (5, 5))
+function forest_fire(; density = 0.45, griddims = (5, 5), probabilityOfSpread = 100)
     space = GridSpaceSingle(griddims; periodic = false, metric = :manhattan)
-    forest = StandardABM(TreeAgent, space; agent_step! = forest_step, scheduler = Schedulers.ByID())
+    forest = StandardABM(TreeAgent, space; agent_step! = forest_step, scheduler = Schedulers.ByID(), properties = Dict(:probabilityOfSpread => probabilityOfSpread))
 
     for pos in positions(forest)
         if rand(Uniform(0,1)) < density
