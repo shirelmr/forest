@@ -10,6 +10,8 @@ function App() {
   let [simSpeed, setSimSpeed] = useState(1);
   let [density, setDensity] = useState(0.45);
   let [spread, setSpread] = useState(100);
+  let [swind, setSwind] = useState(0);
+  let [wwind, setWwind] = useState(0);
 
   const running = useRef(null);
 
@@ -92,6 +94,20 @@ function App() {
           type='number'
           value={spread}
           onChange={setSpread}
+        />
+        <SliderField
+          label="South Wind Speed"
+          min={-50} max={50} step={1}
+          type='number'
+          value={swind}
+          onChange={setSwind}
+        />
+        <SliderField
+          label="West Wind Speed"
+          min={-50} max={50} step={1}
+          type='number'
+          value={wwind}
+          onChange={setWwind}
         />
       </div>
       <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor:"white"}}>
