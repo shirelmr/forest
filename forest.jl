@@ -22,6 +22,7 @@ end
 function forest_fire(; density = 0.45, griddims = (5, 5), probabilityOfSpread = 100)
     space = GridSpaceSingle(griddims; periodic = false, metric = :manhattan)
     forest = StandardABM(TreeAgent, space; agent_step! = forest_step, scheduler = Schedulers.ByID(), properties = Dict(:probabilityOfSpread => probabilityOfSpread))
+    println("Probability of fire spread: $probabilityOfSpread%\n")
 
     for pos in positions(forest)
         if rand(Uniform(0,1)) < density
