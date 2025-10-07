@@ -20,7 +20,13 @@ function App() {
     fetch("http://localhost:8000/simulations", {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dim: [gridSize, gridSize], density: density, spread: spread })
+      body: JSON.stringify({ 
+        dim: [gridSize, gridSize], 
+        density: density, 
+        spread: spread,
+        southWind: swind,
+        westWind: wwind
+      })
     }).then(resp => resp.json())
     .then(data => {
       console.log(data);
@@ -96,14 +102,14 @@ function App() {
           onChange={setSpread}
         />
         <SliderField
-          label="South Wind Speed"
+          label="South Wind (S→N)"
           min={-50} max={50} step={1}
           type='number'
           value={swind}
           onChange={setSwind}
         />
         <SliderField
-          label="West Wind Speed"
+          label="West Wind (W→E)"
           min={-50} max={50} step={1}
           type='number'
           value={wwind}
