@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 // import './App.css'
 import '@aws-amplify/ui-react/styles.css';
-import { Button, SliderField } from "@aws-amplify/ui-react";
+import { Button, SliderField, CheckboxField } from "@aws-amplify/ui-react";
+import Plot from 'react-plotly.js';
 
 function App() {
   let [location, setLocation] = useState("");
@@ -12,6 +13,10 @@ function App() {
   let [spread, setSpread] = useState(100);
   let [swind, setSwind] = useState(0);
   let [wwind, setWwind] = useState(0);
+  let [bigJumps, setBigJumps] = useState(false);
+
+  const simTime = useRef([]);
+  const burntCount = useRef([]);
 
   const running = useRef(null);
 
@@ -25,11 +30,16 @@ function App() {
         density: density, 
         spread: spread,
         southWind: swind,
-        westWind: wwind
+        westWind: wwind,
+        bigJumps: bigJumps
       })
     }).then(resp => resp.json())
     .then(data => {
       console.log(data);
+
+      simTime.current = [0];
+      burntCount.current = [0];
+
       setLocation(data["Location"]);
       setTrees(data["trees"]);
     });
@@ -41,13 +51,21 @@ function App() {
       fetch("http://localhost:8000" + location)
       .then(res => res.json())
       .then(data => {
-        setTrees(data["trees"]);
+        var trees = data["trees"];
+
+        var count =trees.filter(tree => tree.status == "burnt").length;
+
+        simTime.current = [...simTime.current, simTime.current.length];
+        burntCount.current = [...burntCount.current, count/trees.length];
+
+        setTrees(trees);
       });
     }, 500);
   };
 
   const handleStop = () => {
     clearInterval(running.current);
+    console.log(simTime.current, burntCount.current);
   }
 
   let burning = trees.filter(t => t.status == "burning").length;
@@ -114,6 +132,26 @@ function App() {
           type='number'
           value={wwind}
           onChange={setWwind}
+        />
+        <CheckboxField
+          label="Enable Big Jumps (Long-distance sparks)"
+          name="bigJumps"
+          value="yes"
+          checked={bigJumps}
+          onChange={(e) => setBigJumps(e.target.checked)}
+        />
+        <Plot
+        data={[
+          {
+            x: [1, 2, 3],
+            y: [2, 6, 3],
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: {color: 'red'},
+          },
+          {type: 'bar', x: [1, 2, 3], y: [2, 5, 3]},
+        ]}
+        layout={ {width: 320, height: 240, title: {text: 'A Fancy Plot'}} }
         />
       </div>
       <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" style={{backgroundColor:"white"}}>
